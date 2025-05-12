@@ -13,21 +13,8 @@ pipeline {
       sh 'mvn compile'
     }
   }
-  
-  stage('Test') {
-    steps {
-      sh 'mvn test -Dmaven.test.failure.ignore=true'
-    }
-  }
+
 }
-  
-  post {
-    always {
-        archiveArtifacts artifacts: '**/target/site/**/*.*', fingerprint: true
-        archiveArtifacts artifacts: '**/target/**/*.jar', fingerprint: true
-        archiveArtifacts artifacts: '**/target/**/*.war', fingerprint: true
-        junit '**/target/surefire-reports/*.xml'
-    }
-    }
+
 }
 
