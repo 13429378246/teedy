@@ -8,6 +8,11 @@ pipeline {
  // Docker Hub Repository's name
 DOCKER_IMAGE = 'panjianhui/teedy' // your Docker Hub user name and Repository's name
  DOCKER_TAG = "${env.BUILD_NUMBER}" // use build number as tag
+  HTTP_PROXY  = "http://10.13.214.210:7890"
+    HTTPS_PROXY = "http://10.13.214.210:7890"
+    NO_PROXY    = "localhost,127.0.0.1"
+   
+    DOCKER_CLIENT_TIMEOUT = "300"
  }
 
  stages {
