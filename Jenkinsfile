@@ -8,11 +8,6 @@ pipeline {
  // Docker Hub Repository's name
 DOCKER_IMAGE = 'panjianhui/teedy' // your Docker Hub user name and Repository's name
  DOCKER_TAG = "${env.BUILD_NUMBER}" // use build number as tag
-  HTTP_PROXY  = "http://10.13.214.210:7890"
-    HTTPS_PROXY = "http://10.13.214.210:7890"
-    NO_PROXY    = "localhost,127.0.0.1"
-   
-    DOCKER_CLIENT_TIMEOUT = "300"
  }
 
  stages {
@@ -38,34 +33,22 @@ DOCKER_IMAGE = 'panjianhui/teedy' // your Docker Hub user name and Repository's 
  }
  }
 
-stage('Upload image') {
-  steps {
-    script {
-      // 从 Jenkins 凭证里取出 Docker Hub 的用户名和密码
-      withCredentials([usernamePassword(
-        credentialsId: 'doc',
-        usernameVariable: 'DOCKER_USER',
-        passwordVariable: 'DOCKER_PASS'
-      )]) {
-        sh '''
-          # 延长 Docker CLI 超时，避免网络慢导致失败
-          export DOCKER_CLIENT_TIMEOUT=300
-          export COMPOSE_HTTP_TIMEOUT=300
+ // Uploading Docker images into Docker Hub
+   stage('Upload image') {
+ steps {
+ script {
+ // sign in Docker Hub
+ docker.withRegistry('',
+'doc') {
+ // push image
+docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push()
 
-          # 手动登录（等同于：docker login -u panjianhui -p pjh10086+ https://registry.hub.docker.com）
-          echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin https://registry.hub.docker.com
-
-          # Push 指定 tag
-          docker push ${DOCKER_IMAGE}:${DOCKER_TAG}
-
-          # 给 latest 打个 tag 并 push
-          docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest
-          docker push ${DOCKER_IMAGE}:latest
-        '''
-      }
-    }
-  }
-}
+// ：optional: label latest
+docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push('latest')
+ }
+ }
+   }
+ }
 
 
  // Running Docker container
