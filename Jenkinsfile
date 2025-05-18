@@ -39,7 +39,7 @@ DOCKER_IMAGE = 'panjianhui/teedy' // your Docker Hub user name and Repository's 
  script {
  // sign in Docker Hub
  docker.withRegistry('https://registry.hub.docker.com',
-'DOCKER_HUB_CREDENTIALS') {
+'doc') {
  // push image
 docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push()
 
