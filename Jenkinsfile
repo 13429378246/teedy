@@ -55,14 +55,14 @@ docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").push('latest')
  steps {
  script {
  // stop then remove containers if exists
-sh 'sudo docker stop teedy-container-8081 || true'
-sh 'sudo docker rm teedy-container-8081 || true'
+sh 'docker stop teedy-container-8081 || true'
+sh 'docker rm teedy-container-8081 || true'
 // run Container
 docker.image("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}").run(
 '--name teedy-container-8081 -d -p 8081:8080'
 )
 // Optional: list all teedy-containers
-sh 'sudo docker ps --filter "name=teedy-container"'
+sh 'docker ps --filter "name=teedy-container"'
 
 }
 }
